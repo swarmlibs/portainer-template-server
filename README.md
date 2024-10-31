@@ -1,5 +1,5 @@
 # About
-A self-hosted template server for Portainer
+A simple Portainer template server, that serves templates specified via `--template-url` and combines them if multiple are specified.
 
 ## Usage
 
@@ -20,3 +20,6 @@ GLOBAL OPTIONS:
    --template-url value [ --template-url value ]  URL to a template file
    --help, -h                                     show help
 ```
+
+## License
+Licensed under the [MIT License](LICENSE).
