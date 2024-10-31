@@ -94,17 +94,15 @@ func main() {
 
 			templateURLs := c.StringSlice("template-url")
 			for _, url := range templateURLs {
-				log.Printf("Serving template from %s\n", url)
-				for _, url := range templateURLs {
-					appTemplate := PortainerAppTemplate{
-						Url: url,
-					}
-					if err := appTemplate.FetchTemplate(); err != nil {
-						log.Printf("Failed to fetch template from %s: %v\n", url, err)
-						continue
-					}
-					combinedAppTemplateScheme.Templates = append(combinedAppTemplateScheme.Templates, appTemplate.Scheme.Templates...)
+				appTemplate := PortainerAppTemplate{
+					Url: url,
 				}
+				if err := appTemplate.FetchTemplate(); err != nil {
+					log.Printf("Failed to fetch template from %s: %v\n", url, err)
+					continue
+				}
+				log.Printf("Serving template from %s\n", url)
+				combinedAppTemplateScheme.Templates = append(combinedAppTemplateScheme.Templates, appTemplate.Scheme.Templates...)
 			}
 
 			mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
