@@ -21,5 +21,26 @@ GLOBAL OPTIONS:
    --help, -h                                     show help
 ```
 
+## Example
+
+```bash
+$ portainer-template-server \
+   --template-url=https://raw.githubusercontent.com/portainer/templates/v3/templates.json \
+   --template-url=https://raw.githubusercontent.com/swarmlibs/portainer-templates/refs/heads/main/templates.json
+```
+
+## Docker Compose
+
+```yaml
+services:
+  server:
+    image: ghcr.io/swarmlibs/portainer-template-server
+    command:
+      - --template-url=https://raw.githubusercontent.com/portainer/templates/v3/templates.json
+      - --template-url=https://raw.githubusercontent.com/swarmlibs/portainer-templates/refs/heads/main/templates.json
+    ports:
+      - "4242:4242"
+```
+
 ## License
 Licensed under the [MIT License](LICENSE).

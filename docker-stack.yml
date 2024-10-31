@@ -1,0 +1,8 @@
+services:
+  server:
+    image: ghcr.io/swarmlibs/portainer-template-server
+    command:
+      - --template-url=https://raw.githubusercontent.com/portainer/templates/v3/templates.json
+      - --template-url=https://raw.githubusercontent.com/swarmlibs/portainer-templates/refs/heads/main/templates.json
+    ports:
+      - "4242:4242"
