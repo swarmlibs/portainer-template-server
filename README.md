@@ -42,5 +42,10 @@ services:
       - "4242:4242"
 ```
 
+## Endpoints
+
+- `/` - Returns the list of template urls
+- `/templates.json` - Returns the combined templates
+
 ## License
 Licensed under the [MIT License](LICENSE).
