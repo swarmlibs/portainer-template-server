@@ -16,7 +16,8 @@ import (
 
 var (
 	DefaultTemplateURLs = []string{
-		"https://raw.githubusercontent.com/portainer/templates/v3/templates.json",
+		// "https://raw.githubusercontent.com/portainer/templates/v3/templates.json",
+		// "https://raw.githubusercontent.com/swarmlibs/portainer-templates/refs/heads/main/templates.json",
 	}
 )
 
@@ -87,7 +88,8 @@ func main() {
 			log.Printf("Starting server on %s\n", server.Addr)
 
 			combinedAppTemplateScheme := PortainerAppTemplateScheme{
-				Version: c.String("template-version"),
+				Version:   c.String("template-version"),
+				Templates: []map[string]any{},
 			}
 
 			templateURLs := c.StringSlice("template-url")
