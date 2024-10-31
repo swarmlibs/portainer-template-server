@@ -67,7 +67,7 @@ func main() {
 			},
 			&cli.StringFlag{
 				Name:  "template-version",
-				Usage: "Version of the template scheme",
+				Usage: "Set the version of the template response",
 				Value: "3",
 			},
 			&cli.StringSliceFlag{
