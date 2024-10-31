@@ -64,6 +64,11 @@ func main() {
 				Usage: "Port to listen on",
 				Value: "4242",
 			},
+			&cli.StringFlag{
+				Name:  "template-version",
+				Usage: "Version of the template scheme",
+				Value: "3",
+			},
 			&cli.StringSliceFlag{
 				Name:  "template-url",
 				Usage: "URL to a template file",
@@ -82,7 +87,7 @@ func main() {
 			log.Printf("Starting server on %s\n", server.Addr)
 
 			combinedAppTemplateScheme := PortainerAppTemplateScheme{
-				Version: "3",
+				Version: c.String("template-version"),
 			}
 
 			templateURLs := c.StringSlice("template-url")
