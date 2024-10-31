@@ -1,4 +1,4 @@
-module github.com/socheatsok78-lab/portainer-templates-server
+module github.com/swarmlibs/portainer-template-server
 
 go 1.23.2
 
