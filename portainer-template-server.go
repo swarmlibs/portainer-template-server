@@ -107,6 +107,17 @@ func main() {
 
 			mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Type", "application/json")
+				list := []string{}
+				for _, url := range templateURLs {
+					list = append(list, url)
+				}
+				if err := json.NewEncoder(w).Encode(list); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+			})
+			mux.HandleFunc("/templates.json", func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Type", "application/json")
 				if err := json.NewEncoder(w).Encode(combinedAppTemplateScheme); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
