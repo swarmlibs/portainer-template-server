@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"context"
@@ -52,8 +52,8 @@ func (t *PortainerAppTemplate) FetchTemplate() error {
 
 func main() {
 	app := &cli.App{
-		Name:  "portainer-templates-server",
-		Usage: "A self-hosted template server for Portainer",
+		Name:  "portainer-template-server",
+		Usage: "Portainer template server",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "host",

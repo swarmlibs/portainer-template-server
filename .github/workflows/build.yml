@@ -50,8 +50,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            docker.io/socheatsok78lab/portainer-templates-server
-            ghcr.io/socheatsok78-lab/portainer-templates-server
+            docker.io/${{ github.repository }}
+            ghcr.io/${{ github.repository }}
           flavor: latest=false
           tags: |
             type=semver,pattern={{version}}
