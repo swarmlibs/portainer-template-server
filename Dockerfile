@@ -31,7 +31,7 @@ ARG TARGETARCH
 # source code into the container.
 RUN --mount=type=cache,target=/go/pkg/mod/ \
     --mount=type=bind,target=. \
-    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/portainer-template-server portainer-template-server.go
+    CGO_ENABLED=0 GOARCH=$TARGETARCH go build -o /bin/portainer-template-server .
 
 ################################################################################
 # Create a new stage for running the application that contains the minimal
