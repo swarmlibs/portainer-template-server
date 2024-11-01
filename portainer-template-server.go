@@ -79,6 +79,7 @@ func main() {
 		Action: func(c *cli.Context) error {
 			host := c.String("host")
 			port := c.String("port")
+			templateURLs := c.StringSlice("template-url")
 
 			mux := http.NewServeMux()
 			server := &http.Server{
@@ -87,22 +88,8 @@ func main() {
 			}
 			log.Printf("Starting server on %s\n", server.Addr)
 
-			combinedAppTemplateScheme := PortainerAppTemplateScheme{
-				Version:   c.String("template-version"),
-				Templates: []map[string]any{},
-			}
-
-			templateURLs := c.StringSlice("template-url")
 			for _, url := range templateURLs {
-				appTemplate := PortainerAppTemplate{
-					Url: url,
-				}
-				if err := appTemplate.FetchTemplate(); err != nil {
-					log.Printf("Failed to fetch template from %s: %v\n", url, err)
-					continue
-				}
 				log.Printf("Serving template from %s\n", url)
-				combinedAppTemplateScheme.Templates = append(combinedAppTemplateScheme.Templates, appTemplate.Scheme.Templates...)
 			}
 
 			mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -117,6 +104,20 @@ func main() {
 				}
 			})
 			mux.HandleFunc("/templates.json", func(w http.ResponseWriter, r *http.Request) {
+				combinedAppTemplateScheme := PortainerAppTemplateScheme{
+					Version:   c.String("template-version"),
+					Templates: []map[string]any{},
+				}
+				for _, url := range templateURLs {
+					appTemplate := PortainerAppTemplate{
+						Url: url,
+					}
+					if err := appTemplate.FetchTemplate(); err != nil {
+						log.Printf("Failed to fetch template from %s: %v\n", url, err)
+						continue
+					}
+					combinedAppTemplateScheme.Templates = append(combinedAppTemplateScheme.Templates, appTemplate.Scheme.Templates...)
+				}
 				w.Header().Set("Content-Type", "application/json")
 				if err := json.NewEncoder(w).Encode(combinedAppTemplateScheme); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
