@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"slices"
 	"syscall"
 	"time"
 
@@ -75,11 +76,34 @@ func main() {
 				Usage: "URL to a template file",
 				Value: cli.NewStringSlice(DefaultTemplateURLs...),
 			},
+			&cli.StringFlag{
+				Name:  "repos-url",
+				Usage: "URL to a list of template URLs",
+			},
 		},
 		Action: func(c *cli.Context) error {
 			host := c.String("host")
 			port := c.String("port")
+
 			templateURLs := c.StringSlice("template-url")
+			reposURL := c.String("repos-url")
+			if reposURL != "" {
+				resp, err := http.Get(reposURL)
+				if err != nil {
+					log.Fatalf("Failed to fetch template list from %s: %v\n", reposURL, err)
+				}
+				defer resp.Body.Close()
+				respTemplateURLs := []string{}
+				if err := json.NewDecoder(resp.Body).Decode(&respTemplateURLs); err != nil {
+					log.Fatalf("Failed to decode template list from %s: %v\n", reposURL, err)
+				}
+				for _, url := range respTemplateURLs {
+					if slices.Contains(templateURLs, url) {
+						continue
+					}
+					templateURLs = append(templateURLs, url)
+				}
+			}
 
 			mux := http.NewServeMux()
 			server := &http.Server{
