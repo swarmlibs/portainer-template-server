@@ -51,6 +51,22 @@ func (t *PortainerAppTemplate) FetchTemplate() error {
 	return nil
 }
 
+func fetchRepos(reposURL string) ([]string, error) {
+	if reposURL != "" {
+		resp, err := http.Get(reposURL)
+		if err != nil {
+			log.Fatalf("Failed to fetch template list from %s: %v\n", reposURL, err)
+		}
+		defer resp.Body.Close()
+		respTemplateURLs := []string{}
+		if err := json.NewDecoder(resp.Body).Decode(&respTemplateURLs); err != nil {
+			log.Fatalf("Failed to decode template list from %s: %v\n", reposURL, err)
+		}
+		return respTemplateURLs, nil
+	}
+	return make([]string, 0), nil
+}
+
 func main() {
 	app := &cli.App{
 		Name:  "portainer-template-server",
@@ -85,18 +101,18 @@ func main() {
 			host := c.String("host")
 			port := c.String("port")
 
+			mux := http.NewServeMux()
+			server := &http.Server{
+				Addr:    host + ":" + port,
+				Handler: mux,
+			}
+			log.Printf("Starting server on %s\n", server.Addr)
+
 			templateURLs := c.StringSlice("template-url")
 			reposURL := c.String("repos-url")
-			if reposURL != "" {
-				resp, err := http.Get(reposURL)
-				if err != nil {
-					log.Fatalf("Failed to fetch template list from %s: %v\n", reposURL, err)
-				}
-				defer resp.Body.Close()
-				respTemplateURLs := []string{}
-				if err := json.NewDecoder(resp.Body).Decode(&respTemplateURLs); err != nil {
-					log.Fatalf("Failed to decode template list from %s: %v\n", reposURL, err)
-				}
+
+			if respTemplateURLs, err := fetchRepos(reposURL); err == nil {
+				log.Printf("Repositories URL: %s\n", reposURL)
 				for _, url := range respTemplateURLs {
 					if slices.Contains(templateURLs, url) {
 						continue
@@ -104,13 +120,6 @@ func main() {
 					templateURLs = append(templateURLs, url)
 				}
 			}
-
-			mux := http.NewServeMux()
-			server := &http.Server{
-				Addr:    host + ":" + port,
-				Handler: mux,
-			}
-			log.Printf("Starting server on %s\n", server.Addr)
 
 			for _, url := range templateURLs {
 				log.Printf("Serving template from %s\n", url)
@@ -147,6 +156,21 @@ func main() {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+			})
+			mux.HandleFunc("/-/health", (func(w http.ResponseWriter, r *http.Request) {
+				w.Write([]byte("OK"))
+			}))
+			mux.HandleFunc("/-/reload", func(w http.ResponseWriter, r *http.Request) {
+				if respTemplateURLs, err := fetchRepos(reposURL); err == nil {
+					for _, url := range respTemplateURLs {
+						if slices.Contains(templateURLs, url) {
+							continue
+						}
+						templateURLs = append(templateURLs, url)
+					}
+				}
+				log.Print("Reloaded templates")
+				w.Write([]byte("OK"))
 			})
 
 			shutdownChan := make(chan bool, 1)
