@@ -19,7 +19,7 @@ GLOBAL OPTIONS:
    --template-version value                       Set the version of the template response (default: "3")
    --template-url value [ --template-url value ]  URL to a template file
    --repos-url value                              URL to a list of template URLs
-   --help, -h                                     show he
+   --help, -h                                     show help
 ```
 
 ## Example
