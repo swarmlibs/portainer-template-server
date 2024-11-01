@@ -108,16 +108,18 @@ func main() {
 			}
 			log.Printf("Starting server on %s\n", server.Addr)
 
-			templateURLs := c.StringSlice("template-url")
 			reposURL := c.String("repos-url")
+			templateURLs := c.StringSlice("template-url")
 
-			if respTemplateURLs, err := fetchRepos(reposURL); err == nil {
-				log.Printf("Repositories URL: %s\n", reposURL)
-				for _, url := range respTemplateURLs {
-					if slices.Contains(templateURLs, url) {
-						continue
+			if reposURL != "" {
+				if respTemplateURLs, err := fetchRepos(reposURL); err == nil {
+					log.Printf("Repositories URL: %s\n", reposURL)
+					for _, url := range respTemplateURLs {
+						if slices.Contains(templateURLs, url) {
+							continue
+						}
+						templateURLs = append(templateURLs, url)
 					}
-					templateURLs = append(templateURLs, url)
 				}
 			}
 
@@ -161,15 +163,17 @@ func main() {
 				w.Write([]byte("OK"))
 			}))
 			mux.HandleFunc("/-/reload", func(w http.ResponseWriter, r *http.Request) {
-				if respTemplateURLs, err := fetchRepos(reposURL); err == nil {
-					for _, url := range respTemplateURLs {
-						if slices.Contains(templateURLs, url) {
-							continue
+				if reposURL != "" {
+					if respTemplateURLs, err := fetchRepos(reposURL); err == nil {
+						for _, url := range respTemplateURLs {
+							if slices.Contains(templateURLs, url) {
+								continue
+							}
+							templateURLs = append(templateURLs, url)
 						}
-						templateURLs = append(templateURLs, url)
 					}
+					log.Print("Reloaded templates")
 				}
-				log.Print("Reloaded templates")
 				w.Write([]byte("OK"))
 			})
 
