@@ -1,5 +1,5 @@
 # About
-A simple Portainer template server, that serves templates specified via `--template-url` and combines them if multiple are specified.
+A simple customizable Portainer template server.
 
 ## Usage
 
@@ -39,9 +39,7 @@ portainer-template-server \
 services:
   server:
     image: ghcr.io/swarmlibs/portainer-template-server
-    command:
-      - --template-url=https://raw.githubusercontent.com/portainer/templates/v3/templates.json
-      - --template-url=https://raw.githubusercontent.com/swarmlibs/portainer-templates/refs/heads/main/templates.json
+    command: --repos-url=https://raw.githubusercontent.com/swarmlibs/portainer-template-extras/refs/heads/main/repos.json
     ports:
       - "4242:4242"
 ```
