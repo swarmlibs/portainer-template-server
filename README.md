@@ -25,7 +25,7 @@ GLOBAL OPTIONS:
 ## Example
 
 ```bash
-portainer-template-server --repos-url=https://raw.githubusercontent.com/swarmlibs/portainer-templates/refs/heads/main/repos.json
+portainer-template-server --repos-url=https://raw.githubusercontent.com/swarmlibs/portainer-template-extras/refs/heads/main/repos.json
 
 # or, manually specify the template URLs
 portainer-template-server \
