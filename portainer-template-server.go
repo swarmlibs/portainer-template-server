@@ -83,6 +83,10 @@ func main() {
 				Value: "4242",
 			},
 			&cli.StringFlag{
+				Name:  "repos-url",
+				Usage: "URL to a list of template URLs",
+			},
+			&cli.StringFlag{
 				Name:  "template-version",
 				Usage: "Set the version of the template response",
 				Value: "3",
@@ -91,10 +95,6 @@ func main() {
 				Name:  "template-url",
 				Usage: "URL to a template file",
 				Value: cli.NewStringSlice(DefaultTemplateURLs...),
-			},
-			&cli.StringFlag{
-				Name:  "repos-url",
-				Usage: "URL to a list of template URLs",
 			},
 		},
 		Action: func(c *cli.Context) error {
